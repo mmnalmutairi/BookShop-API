@@ -4,9 +4,14 @@ const express = require("express");
 const cors = require("cors");
 
 let books = require("./Books");
+const bodyParser = require("body-parser");
+const { default: slugify } = require("slugify");
+const Books = require("./Books");
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json());
+
 
 app.get("/Books", (req, res) => {
     res.json(books);
@@ -24,6 +29,19 @@ app.delete("/Books/:bookName", (req, res) => {
     }
 
 });
+
+app.post("/Books", (req, res) => {
+
+    const id = Books.length + 1;
+    const slug = slugify(req.body.name, { lower: true });
+    const newBook = {
+        id,
+        slug,
+        ...req.body,
+    };
+    Books.push(newBook);
+    res.status(201).json(newBook);
+})
 
 app.listen(8000, () => {
     console.log("The  application is running on localhost:8000");
