@@ -1,4 +1,4 @@
-const books = require("../../Books");
+let books = require("../../Books");
 const { default: slugify } = require("slugify");
 
 exports.bookfetch = (req, res) => {
@@ -8,12 +8,13 @@ exports.bookfetch = (req, res) => {
 // ****************** DELETE ******************
 
 exports.deleteBook = (req, res) => {
-    const { bookName } = req.params; // getting id
-    const foundBook = books.find(book => book.name != bookName); // check if book is there
+    const { bookId } = req.params; // getting id
+    const foundBook = books.find(book => book.id === +bookId); // check if book is there
     console.log(foundBook);
 
     if (foundBook) {
-        books.filter(books => books.name !== bookName); // delete the book
+        books = books.filter(books => books.id !== foundBook.id); // delete the book
+        console.log(books);
         res.status(204).end(); // No content
     } else {
         res.status(404).json({ message: "Book Not Found" });
