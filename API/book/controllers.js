@@ -1,7 +1,12 @@
-let books = require("../../Books");
 const { default: slugify } = require("slugify");
+const { Book } = require("../../db/models")
 
-exports.bookfetch = (req, res) => {
+exports.bookfetch = async (req, res) => {
+    // const books = await Book.findAll();
+    // console.log(books);
+    const books = await Book.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] }
+    });
     res.json(books);
 }
 
@@ -24,17 +29,16 @@ exports.deleteBook = (req, res) => {
 
 // ****************** CREATE ******************
 
-exports.createBook = (req, res) => {
+exports.createBook = async (req, res) => {
+    try {
+        const newBook = await Book.create(req.body);
+        res.status(201).json(newBook);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+    // const id = books.length + 1;
+    // const slug = slugify(req.body.name, { lower: true });
 
-    const id = books.length + 1;
-    const slug = slugify(req.body.name, { lower: true });
-    const newBook = {
-        id,
-        slug,
-        ...req.body,
-    };
-    books.push(newBook);
-    res.status(201).json(newBook);
 }
 
 // ****************** UPDATE ******************
