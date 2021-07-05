@@ -12,17 +12,22 @@ exports.bookfetch = async (req, res) => {
 
 // ****************** DELETE ******************
 
-exports.deleteBook = (req, res) => {
+exports.deleteBook = async (req, res) => {
     const { bookId } = req.params; // getting id
-    const foundBook = books.find(book => book.id === +bookId); // check if book is there
-    console.log(foundBook);
+    const foundBook = await Book.findByPk(bookId);
+    // const foundBook = books.find(book => book.id === +bookId); // check if book is there
+    try {
+        if (foundBook) {
+            await foundBook.destroy();
+            res.status(204).end(); // No content
+            // books = books.filter(books => books.id !== foundBook.id); // delete the book
+            // console.log(books);
 
-    if (foundBook) {
-        books = books.filter(books => books.id !== foundBook.id); // delete the book
-        console.log(books);
-        res.status(204).end(); // No content
-    } else {
-        res.status(404).json({ message: "Book Not Found" });
+        } else {
+            res.status(500).json({ message: error.message });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 
 }
@@ -43,22 +48,23 @@ exports.createBook = async (req, res) => {
 
 // ****************** UPDATE ******************
 
-exports.updateBook = (req, res) => {
+exports.updateBook = async (req, res) => {
 
     const { bookId } = req.params; // getting id
-
-    const foundBook = books.find((book) => book.id === +bookId); // check if book is there
-
-    if (foundBook) {
-        for (const key in req.body) {
-
-            foundBook[key] = req.body[key];
-
-            // foundBook.slug = slugify(req.body.name, { lower: true });
+    // const foundBook = books.find((book) => book.id === +bookId); // check if book is there
+    try {
+        const foundBook = await Book.findByPk(bookId);
+        if (foundBook) {
+            // for (const key in req.body) {
+            //     foundBook[key] = req.body[key];
+            //     // foundBook.slug = slugify(req.body.name, { lower: true });
+            // }
+            await foundBook.update(req.body);
+            res.status(204).end();
+        } else {
+            res.status(404).json({ message: "Book Is not Updated" });
         }
-
-        res.status(204).json().end();
-    } else {
-        res.status(404).json({ message: "Book Is not Updated" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }

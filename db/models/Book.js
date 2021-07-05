@@ -1,7 +1,8 @@
+const SequelizeSlugify = require("sequelize-slugify");
 
 const BookModel = (sequelize, DataTypes) => {
     const Book = sequelize.define("Book", {
-        name: { type: DataTypes.STRING },
+        name: { type: DataTypes.STRING, allowNull: false },
         slug: {
             type: DataTypes.STRING,
             unique: true
@@ -9,6 +10,7 @@ const BookModel = (sequelize, DataTypes) => {
         image: { type: DataTypes.STRING },
         brief: { type: DataTypes.STRING },
     });
+    SequelizeSlugify.slugifyModel(Book, { source: ["name"] });
     return Book;
 };
 
