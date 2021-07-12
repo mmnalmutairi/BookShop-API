@@ -9,6 +9,7 @@ const BookModel = (sequelize, DataTypes) => {
         },
         image: { type: DataTypes.STRING },
         brief: { type: DataTypes.STRING },
+
     });
     SequelizeSlugify.slugifyModel(Book, { source: ["name"] });
     return Book;
