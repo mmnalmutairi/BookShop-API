@@ -9,6 +9,7 @@ const userRoutes = require("./API/user/routes");
 const db = require("./db/models/index");
 const passport = require("passport");
 const { localStrategy } = require("./API/middleware/passport");
+const { jwtStrategy } = require("./API/middleware/passport");
 // ****************** MIDDLEWARE ******************
 
 // Request ----> Middleware ------> Next() ------> Router/Controller
@@ -18,7 +19,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(passport.initialize());
 passport.use(localStrategy);
-
+passport.use(jwtStrategy);
 
 // ****************** ROUTES ******************
 app.use("/books", bookroutes);
@@ -42,7 +43,7 @@ app.use((err, req, res, next) => {
 
 const run = async () => {
     try {
-        await db.sequelize.sync();
+        await db.sequelize.sync({ alter: true });
         console.log("Connection to the database successful!");
         await app.listen(8000, () => {
             console.log("The application is running on localhost:8000");

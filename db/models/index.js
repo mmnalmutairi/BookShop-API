@@ -47,4 +47,14 @@ db.Book.belongsTo(db.Shop, {
   as: "shop",
   foreignKey: "shopId",
 });
+
+db.User.hasOne(db.Shop, {
+  as: "shop",
+  foreignKey: "userId"
+});
+
+db.Shop.belongsTo(db.User, {
+  as: "user"
+});
+
 module.exports = db;
