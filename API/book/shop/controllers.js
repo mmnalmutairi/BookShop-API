@@ -19,10 +19,8 @@ exports.shopFetch = async (req, res, next) => {
             include: {
                 model: Book,
                 as: "books",
-                attributes: [{ exclude: ["createdAt", "updatedAt"] }],
-
+                attributes: ["name", "image", "brief"],
             },
-
         });
         res.json(shops);
     } catch (error) {
